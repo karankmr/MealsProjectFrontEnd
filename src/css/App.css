@@ -1,0 +1,65 @@
+.App {
+  text-align: center;
+
+}
+
+body{
+  font-family: "Lato",sans-serif;
+  /*padding: 20px;*/
+  position: relative;
+
+}
+
+.Login{
+  height: 100vh;
+  background-image: linear-gradient(to right bottom, rgba(70, 130, 180, 0.72), rgba(0, 0, 0, 0.5)),url(./img/iceage.jpg);
+  background-size: cover;
+  background-position:top  ;
+  position: relative;
+
+}
+.SignUp{
+  height: 100vh;
+  background-image: linear-gradient(to right bottom, rgba(70, 130, 180, 0.72), rgba(0, 0, 0, 0.5)),url(./img/Ice-Age-Scrat-Wallpaper-2.jpg);
+  background-size: cover;
+  background-position:top  ;
+  position: relative;
+}
+.CreateMeal{
+  height: 100vh;
+  background-image: linear-gradient(to right bottom, rgba(70, 130, 180, 0.72), rgba(0, 0, 0, 0.5)),url(./img/10944.jpg);
+  background-size: cover;
+  background-position:top  ;
+  position: relative;
+}
+.adminView{
+  height: 100vh;
+  background-image: linear-gradient(to right bottom, rgba(70, 130, 180, 0.72), rgba(0, 0, 0, 0.5)),url(./img/ice6.jpg);
+  background-size: cover;
+  background-position:center;
+  position: relative;
+}
+.viewMeals{
+  height: 100vh;
+  background-image: linear-gradient(to right bottom, rgba(70, 130, 180, 0.72), rgba(0, 0, 0, 0.5)),url(./img/ice7.jpg);
+  background-size: cover;
+  background-position:top  ;
+  position: relative;
+}
+.form{
+  position: absolute;
+  top: 30%;
+  left: 40%;
+  font-size: x-large;
+}
+
+.Login-button{
+  size: 150px;
+}
+.view{
+  align-content: center;
+  text-transform: capitalize;
+  transform: translate();
+  justify-content: center;
+  margin-top: -19px;
+}
