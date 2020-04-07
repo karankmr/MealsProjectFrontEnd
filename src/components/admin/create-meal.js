@@ -23,6 +23,64 @@ const CreateMeal=()=>{
             .then(history.push('/viewAllMeals'))
             .catch(onerror=>{console.log(onerror)});
     }
+    const [componentSize, setComponentSize] = useState('small');
+    const onFormLayoutChange = ({size}) => {
+        setComponentSize(size);
+    };
+    return (
+        <div className="CreateMeal" >
+            <div className="form">
+                <Form
+                    labelCol={{span: 8}}
+                    wrapperCol={{span: 12}}
+                    layout="horizontal"
+                    initialValues={{size: componentSize}}
+                    onValuesChange={onFormLayoutChange}
+                    size={componentSize}
+                >
+                    <Form.Item label="Meal Title"
+                               value={title}
+                               onChange={e=>setTitle(e.target.value)}>
+                        <Input/>
+                    </Form.Item>
+
+                    <Form.Item label="Date"
+                    >
+                        <DatePicker allowClear={false} format="DD/MM/YYYY" onChange={e =>  setDate(e.format('DD/MM/YYYY'))  }/>
+                    </Form.Item>
+
+                    <Form.Item name="time-picker"
+                               label="TimePicker"
+                               value={time}
+                    >
+                        <TimePicker allowClear={false} format="HH:mm" placeholder="time" onChange={e=>{ setTime(e.format("HH:mm")) }}/>
+                    </Form.Item>
+
+                    <Form.Item label="Calorie"
+                               value={calorie}
+                               onChange={e=>setCalorie(e.target.value)}>
+                        <InputNumber/>
+                    </Form.Item>
+
+                    <Form.Item label="User Id"
+                               value={userId}
+                               onChange={e=>setUserId(e.target.value)}>
+                        <InputNumber/>
+                    </Form.Item>
+
+                    <Form.Item label="Create Meal"
+                               onClick={handleSubmit}>
+                        <Button type="primary">Submit</Button>
+                    </Form.Item>
+                </Form>
+            </div>
+        </div>
+    );
+}
+
+export default CreateMeal
+
+
 //     return(
 //         <div className="CreateMeal">
 //             <form className="form" onSubmit={handleSubmit}>
@@ -36,59 +94,3 @@ const CreateMeal=()=>{
 //         </div>
 //     )
 // }
-    const [componentSize, setComponentSize] = useState('small');
-    const onFormLayoutChange = ({size}) => {
-        setComponentSize(size);
-    };
-    return (
-        <div className="CreateMeal" >
-            <div className="form">
-            <Form
-                labelCol={{span: 8}}
-                wrapperCol={{span: 12}}
-                layout="horizontal"
-                initialValues={{size: componentSize}}
-                onValuesChange={onFormLayoutChange}
-                size={componentSize}
-            >
-                <Form.Item label="Meal Title"
-                            value={title}
-                            onChange={e=>setTitle(e.target.value)}>
-                    <Input/>
-                </Form.Item>
-
-                <Form.Item label="Date"
-                           >
-                    <DatePicker allowClear={false} format="DD/MM/YYYY" onChange={e =>  setDate(e.format('DD/MM/YYYY'))  }/>
-                </Form.Item>
-
-                <Form.Item name="time-picker"
-                           label="TimePicker"
-                           value={time}
-                            >
-                    <TimePicker allowClear={false} format="HH:mm" placeholder="time" onChange={e=>{ setTime(e.format("HH:mm")) }}/>
-                </Form.Item>
-
-                <Form.Item label="Calorie"
-                            value={calorie}
-                           onChange={e=>setCalorie(e.target.value)}>
-                    <InputNumber/>
-                </Form.Item>
-
-                <Form.Item label="User Id"
-                           value={userId}
-                           onChange={e=>setUserId(e.target.value)}>
-                    <InputNumber/>
-                </Form.Item>
-
-                <Form.Item label="Create Meal"
-                           onClick={handleSubmit}>
-                    <Button type="primary">Submit</Button>
-                </Form.Item>
-            </Form>
-        </div>
-        </div>
-    );
-}
-
-export default CreateMeal

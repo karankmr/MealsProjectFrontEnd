@@ -30,7 +30,7 @@ const ViewAllUsers=()=>{
     const [page,setPage]=useState(1)
     const handlePagination=(page)=>{
         setPage(page);
-        axios.get('http://localhost:3001/user/getAlluser',
+        axios.get(`http://localhost:3001/user/getAlluser?page=${page}`,
             {headers:{'jwttoken':reactLocalStorage.get('jwttoken')}})
             .then(res=>setUsers(res.data))}
 
@@ -41,7 +41,7 @@ const ViewAllUsers=()=>{
     }
 
 
-    return(<div>
+    return(<div className="viewAllUsers">
             <br/>
             <Search
                 placeholder="input search text"
@@ -70,7 +70,9 @@ const ViewAllUsers=()=>{
                 />
             </Table>
             <br/>
+            <footer>
             <Pagination size="small" current={page} onChange={handlePagination} total={50}  />
+            </footer>
         </div>
 
     );

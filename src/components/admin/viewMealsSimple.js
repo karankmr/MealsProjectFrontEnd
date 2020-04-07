@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from "react";
 import '../../css/App.css';
 import {reactLocalStorage} from "reactjs-localstorage";
-import {DatePicker, Table} from "antd";
+import {Table} from "antd";
 const axios = require('axios').default;
 const { Column } = Table;
-const { RangePicker } = DatePicker;
 
-const ViewMealForUser=({match})=>{
+const ViewMealForUserSimple=({match})=>{
     const [meals,getMeals]=useState([])
     useEffect(()=> {
         axios.get(`http://localhost:3001/meal/getMealsByUserId?userId=${match.params.id}`,
@@ -17,7 +16,6 @@ const ViewMealForUser=({match})=>{
 
 
     const handleDelete=(id,title)=>{
-        console.log("inthe deleteMeal",id,title)
         axios.delete(`http://localhost:3001/meal/deleteMeal?id=${id}&title=${title}`,
             {headers:{'jwttoken':reactLocalStorage.get('jwttoken')}})
             .then(res=>{if(res.data.deleted)
@@ -41,7 +39,7 @@ const ViewMealForUser=({match})=>{
     // )
 
     return(
-        <div>
+        <div className="viewMeals">
         <Table dataSource={meals}
         pagination={false}>
             <Column title="User Id" dataIndex="userId" key="userId" />
@@ -50,7 +48,6 @@ const ViewMealForUser=({match})=>{
             <Column title="Time" dataIndex="time" key="time" />
             <Column title="Calorie" dataIndex="calorie" key="calorie" />
             <Column title="Status" dataIndex="status" key="status" />
-
             <Column
                 title="Action"
                 key="action"
@@ -58,11 +55,9 @@ const ViewMealForUser=({match})=>{
                 render={(text,record) => <span><a onClick={()=>handleDelete(
                     record.userId,record.title)}>delete</a></span>
                    }
-
             />
         </Table>
-            <RangePicker />
         </div>
     );
 }
-export default ViewMealForUser
+export default ViewMealForUserSimple

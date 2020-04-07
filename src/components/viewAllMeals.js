@@ -1,21 +1,22 @@
 import React, {useEffect, useState} from "react";
 import '../css/App.css';
 import {reactLocalStorage} from 'reactjs-localstorage';
-import {Table, Pagination, Select, Input, DatePicker} from 'antd';
+import { PoweroffOutlined } from '@ant-design/icons';
+import {Table, Pagination, Select, Input, Button} from 'antd';
+import {useHistory} from "react-router-dom";
 const {Search}=Input
 const axios = require('axios').default;
 const { Column } = Table;
-const { RangePicker } = DatePicker;
 
 
 const ViewAllMeals=()=>{
-    const [meals,getmeals]=useState([])
+    const [meals,getMeals]=useState([])
     const [status,setStatus]=useState([])
 
     useEffect(()=> {
 
         axios.get('http://localhost:3001/meal/getAllmeals',{headers:{'jwttoken':reactLocalStorage.get('jwttoken')}})
-            .then(res=>{getmeals(res.data)})
+            .then(res=>{getMeals(res.data)})
     },[])
 
     const [page,setPage]=useState(1)
@@ -23,12 +24,15 @@ const ViewAllMeals=()=>{
         setPage(page);
         axios.get(`http://localhost:3001/meal/getAllmeals?page=${page}`,
             {headers:{'jwttoken':reactLocalStorage.get('jwttoken')}})
-            .then(res=>{getmeals(res.data)})
+            .then(res=>{getMeals(res.data)})
     }
+
     const handleStatus=(status,id,userId)=>{
-        axios.put(`http://localhost:3001/meal?id=${id}&userId=${userId}`,{'status':status},
+        console.log("in handle status")
+        axios.put(`http://localhost:3001/meal/status?id=${id}&userId=${userId}`,{'status':status},
             {headers:{'jwttoken':reactLocalStorage.get('jwttoken')}})
-            .then(res=>{console.log(res.data)})
+            .then(res=>{console.log(res.data)
+                getMeals(res.data.meals)})
     }
 
 
@@ -42,11 +46,17 @@ const ViewAllMeals=()=>{
     const handleSearch=(value)=>{
         axios.get(`http://localhost:3001/meal/getFilteredMeals?search=${value}`,
             {headers:{'jwttoken':reactLocalStorage.get('jwttoken')}})
-            .then(res=>{getmeals(res.data)})
+            .then(res=>{getMeals(res.data)})
+    }
+
+    const history =useHistory();
+    const handleLogout=()=>{
+        reactLocalStorage.clear();
+        history.push('/login')
     }
 
     return(
-        <div >
+        <div className="viewMeals">
             <br/>
             <Search
                 placeholder="input search text"
@@ -83,6 +93,14 @@ const ViewAllMeals=()=>{
             <br/>
             <br/>
             <Pagination size="small" current={page} onChange={handlePagination} total={50}  />
+            <div style={{position:'absolute',marginLeft:'90%',marginTop:'230px'}}>
+                <Button
+                    icon={<PoweroffOutlined />}
+                    onClick={handleLogout}
+                >
+                    Logout
+                </Button>
+                </div>
 
         </div>
     );
