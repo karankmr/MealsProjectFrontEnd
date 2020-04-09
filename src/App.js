@@ -10,7 +10,6 @@ import ViewAllUsers from "./components/admin/viewAllusers";
 import ProtectedRoutes from "./components/protectedRoutes";
 import ViewMealsForUser from "./components/admin/viewMealsForUser";
 import {reactLocalStorage} from 'reactjs-localstorage';
-import EditableTable from "./components/admin/viewMealsForUser";
 
 function App() {
     const [token,setToken]=useState();
@@ -20,12 +19,9 @@ function App() {
 
                 <Route exact path="/" render={(props) => <Login {...props} setToken={setToken} token={token}/>}/>
 
-                <Route exact path="/editable" render={(props) => <EditableTable {...props} />}/>
-
-                <Route exact path="/login" render={(props) => <Login {...props} setToken={setToken} token={token}/>}/>
+                <Route path="/login" render={(props) => <Login {...props} setToken={setToken} token={token}/>}/>
 
                 <Route path="/signUp" component={SignUp}/>
-
 
                 <ProtectedRoutes path='/adminView' component={AdminView}
                                  loggedIn={reactLocalStorage.get('isLoggedIn')} />
@@ -36,11 +32,12 @@ function App() {
                 <ProtectedRoutes path="/createMeals" component={CreateMeal}
                                  loggedIn={reactLocalStorage.get('isLoggedIn')} />
 
-                {/*<Route exact path="/createMeals" render={(props) => <CreateMeal {...props} token={token}/>}/>*/}
+                <ProtectedRoutes path='/viewAllMeals' component={ViewAllMeals}
+                                 loggedIn={reactLocalStorage.get('isLoggedIn')} />
 
-                <Route exact path='/viewAllMeals' render={(props) => <ViewAllMeals {...props} token={token}/>}/>
+                <ProtectedRoutes path='/viewMealById/:id' component={ViewMealsForUser}
+                                 loggedIn={reactLocalStorage.get('isLoggedIn')} />
 
-                <Route exact path='/viewMealById/:id' render={(props) => <ViewMealsForUser {...props} token={token}/>}/>
 
             </div>
 

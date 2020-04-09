@@ -27,12 +27,12 @@ const AdminView=()=>{
                         </Col>
                     </Row>
 
-                    <Row gutter={[24, 24]} justify="space-between" align="bottom">
-                        <Col span={24}><Link to='/createMeals'>
-                            <DemoBox value={50}>Create New Meal</DemoBox>
-                        </Link>
-                        </Col>
-                    </Row>
+                    {/*<Row gutter={[24, 24]} justify="space-between" align="bottom">*/}
+                    {/*    <Col span={24}><Link to='/createMeals'>*/}
+                    {/*        <DemoBox value={50}>Create New Meal</DemoBox>*/}
+                    {/*    </Link>*/}
+                    {/*    </Col>*/}
+                    {/*</Row>*/}
 
                     <Row gutter={[24, 24]} justify="space-between" align="bottom">
                         <Col span={24}><Link to='/viewAllMeals'>

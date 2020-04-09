@@ -1,18 +1,21 @@
-import React, { useState} from "react";
+import React, {useEffect, useState} from "react";
 import '../../css/App.css';
 import { useHistory } from "react-router-dom";
 import {DatePicker, Form,InputNumber, Button,Input,TimePicker} from "antd";
 import {reactLocalStorage} from 'reactjs-localstorage'
 const axios = require('axios').default;
-const CreateMeal=()=>{
+const CreateMeal=(props)=>{
 
     const [title,setTitle]=useState("")
     const [time,setTime]=useState("")
     const [date,setDate]=useState("")
     const [calorie,setCalorie]=useState("")
     const [userId,setUserId]=useState("")
-
     const history =useHistory();
+
+    useEffect(()=>{
+        console.log(props.location.state)
+    },[])
 
     const handleSubmit=(e)=>{
         e.preventDefault()
@@ -65,7 +68,7 @@ const CreateMeal=()=>{
                     <Form.Item label="User Id"
                                value={userId}
                                onChange={e=>setUserId(e.target.value)}>
-                        <InputNumber/>
+                        <InputNumber defaultValue={props.location.state.UserId}/>
                     </Form.Item>
 
                     <Form.Item label="Create Meal"

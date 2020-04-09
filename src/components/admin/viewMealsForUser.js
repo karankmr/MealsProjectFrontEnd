@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Table, Input, InputNumber, Popconfirm, Form} from 'antd';
+import {Table, Input, InputNumber, Popconfirm, Form, Pagination} from 'antd';
 import {reactLocalStorage} from "reactjs-localstorage";
 const axios = require('axios').default;
 
@@ -13,10 +13,13 @@ const EditableCell = ({
                           children,
                           ...restProps
                       }) => {
+
     const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+
     return (
         <td {...restProps}>
             {editing ? (
+
                 <Form.Item
                     name={dataIndex}
                     style={{
@@ -41,28 +44,28 @@ const EditableCell = ({
 
 const ViewMealsForUser = ({match}) => {
 
+    const [meals,getMeals]=useState([])
+    const [form] = Form.useForm();
+    const [editingKey, setEditingKey] = useState('');
+
+    const isEditing = record => record.id === editingKey;
+
     useEffect(()=> {
         axios.get(`http://localhost:3001/meal/getMealsByUserId?userId=${match.params.id}`,
             {headers:{'jwttoken':reactLocalStorage.get('jwttoken')}})
             .then(res=>{getMeals(res.data);})
-    })
+    },[])
 
 
-    const handleDelete=(id,title)=>{
-        axios.delete(`http://localhost:3001/meal/deleteMeal?id=${id}&title=${title}`,
+    const handleDelete=(id,userId)=>{
+        axios.delete(`http://localhost:3001/meal/deleteMeal?id=${id}&userId=${userId}`,
             {headers:{'jwttoken':reactLocalStorage.get('jwttoken')}})
-            .then(res=>{if(res.data.deleted)
-            {getMeals(res.data.meals)}})
+            .then(res=>{console.log(res.data)
+                if(res.data.deleted)
+            {getMeals(res.data.meals)}}).
+        catch(err=>console.log(err))
     }
 
-    const [meals,getMeals]=useState([])
-
-    const [form] = Form.useForm();
-
-
-    const [editingKey, setEditingKey] = useState('');
-
-    const isEditing = record => record.id === editingKey;
 
     const edit = record => {
         form.setFieldsValue({ ...record });
@@ -77,16 +80,12 @@ const ViewMealsForUser = ({match}) => {
     const save = async (key,userId) => {
         try {
             const row = await form.validateFields();
-            console.log(row)
 
             const newData = [...meals];
             const index = newData.findIndex(item => key === item.id);
 
             if (index > -1) {
                 const item = newData[index];
-                console.log(item)
-
-
                 let nValue={}
                 if(row.status!==item.status)
                 {nValue.status=row.status}
@@ -104,11 +103,13 @@ const ViewMealsForUser = ({match}) => {
                 {nValue.title=row.title}
 
                 newData.splice(index, 1, { ...item, ...row });
-                getMeals(newData);
+                // getMeals(newData);
 
                 axios.put(`http://localhost:3001/meal?id=${key}&userId=${userId}`,{...nValue},
                     {headers:{'jwttoken':reactLocalStorage.get('jwttoken')}})
-                    .then(res=>{console.log(res.data)})
+                    .then(res=>{if(res.data.updated)
+                               {getMeals(res.data.meals)}})
+                    .catch(err=>console.log(err))
                 setEditingKey('');
             }
             else {
@@ -121,13 +122,16 @@ const ViewMealsForUser = ({match}) => {
         }
     };
 
+    let i=1;
+
     const columns = [
         {
-            title: 'User Id',
-            dataIndex: 'userId',
-            key:'userId',
+            title: 'Index',
+            key:'index',
             width: '10%',
             editable: false,
+            render:()=>
+                <span style={{color:'black'}}>{i++}</span>
         },
         {
             title: 'Meal Title',
@@ -156,6 +160,14 @@ const ViewMealsForUser = ({match}) => {
             key:'calorie',
             width: '15%',
             editable: true,
+            render:(text)=> {
+                return text < 0 ? (
+                  <span style={{color:'red'}}>{text}</span>
+                ) :  (
+                    <span>{text}</span>
+                );
+            }
+
         },
         {
           title:'Status',
@@ -171,7 +183,7 @@ const ViewMealsForUser = ({match}) => {
             dataIndex:'action',
 
             render:(text,record) => <span><a onClick={()=>handleDelete(
-                       record.userId,record.title)}>delete</a></span>
+                       record.id,record.userId)}>delete</a></span>
 
         },
         {
@@ -225,18 +237,17 @@ const ViewMealsForUser = ({match}) => {
     return (
         <Form form={form} component={false}>
             <Table
+                rowKey={record => record.id}
                 components={{
                     body: {
                         cell: EditableCell,
                     },
                 }}
+                pagination={false}
                 bordered
                 dataSource={meals}
                 columns={mergedColumns}
                 rowClassName="editable-row"
-                pagination={{
-                    onChange: cancel,
-                }}
             />
         </Form>
     );

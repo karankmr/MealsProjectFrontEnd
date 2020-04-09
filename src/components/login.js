@@ -20,10 +20,12 @@ const Login=(props)=>{
             .then(res=>{reactLocalStorage.set('isLoggedIn', res.data.loggedIn);
                 reactLocalStorage.set('jwttoken', res.data.token);
                 if(res.data.iAm==='admin')
-                {history.push('/adminView')}
+                {history.push('/viewAllUsers')}
 
                 if(res.data.iAm==='user')
-                {history.push('/viewAllMeals')}})
+                {
+                    history.push({pathname:'/viewAllMeals',
+                    state:{userId:res.data.userId}})}})
             .catch(onerror=>{console.log(onerror)});
     }
 
