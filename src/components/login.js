@@ -3,21 +3,25 @@ import { useHistory } from "react-router-dom";
 import '../css/App.css';
 import {Link} from "react-router-dom";
 import {reactLocalStorage} from 'reactjs-localstorage';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button,message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 const axios = require('axios').default;
 
-const Login=(props)=>{
+const Login=()=>{
     const history =useHistory();
     const [userName,setUserName]=useState('')
     const [password,setPassword]=useState('')
 
     const  handleSubmit=(e)=>{
         e.preventDefault();
+
+
         axios.post('http://localhost:3001/user/login',
             {'userName':userName,'password':password})
-            .then(res=>{reactLocalStorage.set('isLoggedIn', res.data.loggedIn);
+            .then(res=>{ if(res.data.loggedIn)
+            {
+                reactLocalStorage.set('isLoggedIn', res.data.loggedIn);
                 reactLocalStorage.set('jwttoken', res.data.token);
                 if(res.data.iAm==='admin')
                 {history.push('/viewAllUsers')}
@@ -25,8 +29,10 @@ const Login=(props)=>{
                 if(res.data.iAm==='user')
                 {
                     history.push({pathname:'/viewAllMeals',
-                    state:{userId:res.data.userId}})}})
-            .catch(onerror=>{console.log(onerror)});
+                    state:{userId:res.data.userId}})}} })
+            .catch(onerror=>{
+                console.log(onerror)
+                message.error('Invalid Credentials');});
     }
 
     const updateUsername=(e)=> {
@@ -42,7 +48,6 @@ const Login=(props)=>{
             <div className='form'>
                 <Form
                     name="normal_login"
-                    // className="login-form"
                     initialValues={{
                         remember: true,
                     }}
@@ -54,6 +59,7 @@ const Login=(props)=>{
                             {
                                 required: true,
                                 message: 'Please input your Username!',
+                                type: 'email'
                             },
                         ]}
                         value={userName}
@@ -103,22 +109,3 @@ const Login=(props)=>{
 export default Login
 
 
-
-
-//     return(
-//         <div className="Login">
-//
-//             <form className="form" onSubmit={handleSubmit}>
-//                 <input type="email" name="userName" placeholder="Username" value={userName} onChange={updateUsername}/><br/>
-//                 <input type="password" name="password" placeholder="Password" value={password} onChange={updatePassword}/><br/>
-//                 <button type="submit" className=" Login-button">Login</button>
-//             </form>
-//             <div className="signUpLink">
-//                 <label  >New User?</label><br/>
-//                 <Link to='/signUp'>
-//                 <button >SignUp</button>
-//                 </Link>
-//             </div>
-//         </div>
-//     )
-// }

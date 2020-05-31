@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Input, InputNumber, Popconfirm, Form, Pagination} from 'antd';
+import {Table, Input, InputNumber, Popconfirm, Form} from 'antd';
 import {reactLocalStorage} from "reactjs-localstorage";
+import DatePicker from "antd/es/date-picker";
+import TimePicker from "antd/es/time-picker"
+import * as moment from 'moment';
 const axios = require('axios').default;
 
 const EditableCell = ({
@@ -47,8 +50,16 @@ const ViewMealsForUser = ({match}) => {
     const [meals,getMeals]=useState([])
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState('');
+    const [enabler,setEnabler] = useState(true);
+    const [time,setTime]=useState("");
+    const [date,setDate]=useState("");
 
-    const isEditing = record => record.id === editingKey;
+
+    const isEditing = (record)=> {if(record.id === editingKey)
+        setEnabler(false);
+        return record.id === editingKey;}
+
+
 
     useEffect(()=> {
         axios.get(`http://localhost:3001/meal/getMealsByUserId?userId=${match.params.id}`,
@@ -62,8 +73,8 @@ const ViewMealsForUser = ({match}) => {
             {headers:{'jwttoken':reactLocalStorage.get('jwttoken')}})
             .then(res=>{console.log(res.data)
                 if(res.data.deleted)
-            {getMeals(res.data.meals)}}).
-        catch(err=>console.log(err))
+                {getMeals(res.data.meals)}})
+            .catch(err=>console.log(err))
     }
 
 
@@ -80,21 +91,22 @@ const ViewMealsForUser = ({match}) => {
     const save = async (key,userId) => {
         try {
             const row = await form.validateFields();
-
             const newData = [...meals];
             const index = newData.findIndex(item => key === item.id);
 
             if (index > -1) {
                 const item = newData[index];
-                let nValue={}
+
+                let nValue={};              //initialise n value
+
                 if(row.status!==item.status)
                 {nValue.status=row.status}
 
-                if(row.date!==item.date)
-                {nValue.date=row.date}
+                if(date)
+                {nValue.date=date}
 
-                if(row.time!==item.time)
-                {nValue.time=row.time}
+                if(time)
+                {nValue[ 'time' ] = time}               //nValues initialise
 
                 if(row.calorie!==item.calorie)
                 {nValue.calorie=row.calorie}
@@ -102,15 +114,23 @@ const ViewMealsForUser = ({match}) => {
                 if(row.title!==item.title)
                 {nValue.title=row.title}
 
-                newData.splice(index, 1, { ...item, ...row });
-                // getMeals(newData);
+                console.log("nValue>>>>>>",nValue)
+                console.log("SpreadNValues",{...nValue})
 
-                axios.put(`http://localhost:3001/meal?id=${key}&userId=${userId}`,{...nValue},
+                newData.splice(index, 1, { ...item, ...row });
+
+                axios.put(`http://localhost:3001/meal?id=${key}&userId=${userId}`,
+                    {...nValue},
                     {headers:{'jwttoken':reactLocalStorage.get('jwttoken')}})
-                    .then(res=>{if(res.data.updated)
-                               {getMeals(res.data.meals)}})
-                    .catch(err=>console.log(err))
+                    .then(res=>
+                    {   console.log("backendResponse >>>>",res.data)
+                        if(res.data.updated)
+                        {
+                            getMeals(res.data.meals)}})
+                    .catch(err=>console.log(err.message))
+
                 setEditingKey('');
+                setEnabler(true);
             }
             else {
                 newData.push(row);
@@ -145,14 +165,26 @@ const ViewMealsForUser = ({match}) => {
             dataIndex: 'date',
             key:'date',
             width: '20%',
-            editable: true,
+            editable: false,
+            render:(text,record) => <span>
+                <DatePicker
+                    disabled={enabler}
+                    defaultValue={moment(record.date,'DD/MM/YYYY')}
+                    onChange={e =>  setDate(e.format('DD/MM/YYYY'))}
+                    format='DD/MM/YYYY' /></span>
         },
         {
             title: 'Time',
             dataIndex: 'time',
             key:'time',
             width: '20%',
-            editable: true,
+            editable: false,
+            render:(text,record) => <span>
+                <TimePicker
+                    disabled={enabler}
+                    defaultValue={moment(record.time,'HH:mm')}
+                    onChange={e=>{ setTime(e.format("HH:mm")) }}
+                    format='HH:mm' /></span>
         },
         {
             title: 'Calorie',
@@ -162,7 +194,7 @@ const ViewMealsForUser = ({match}) => {
             editable: true,
             render:(text)=> {
                 return text < 0 ? (
-                  <span style={{color:'red'}}>{text}</span>
+                    <span style={{color:'red'}}>{text}</span>
                 ) :  (
                     <span>{text}</span>
                 );
@@ -170,9 +202,9 @@ const ViewMealsForUser = ({match}) => {
 
         },
         {
-          title:'Status',
-          dataIndex:'status',
-          key:'status',
+            title:'Status',
+            dataIndex:'status',
+            key:'status',
             width:'15%',
             editable:true,
         },
@@ -183,7 +215,7 @@ const ViewMealsForUser = ({match}) => {
             dataIndex:'action',
 
             render:(text,record) => <span><a onClick={()=>handleDelete(
-                       record.id,record.userId)}>delete</a></span>
+                record.id,record.userId)}>delete</a></span>
 
         },
         {
@@ -215,7 +247,12 @@ const ViewMealsForUser = ({match}) => {
             },
         },
     ];
-
+// ek component bna le jo datepicker ko wrap kedega
+    // use do props de
+    // ek toh current current date and dusra ek handler
+    // hadnler ko onchange me lga dio
+    // ab jab bhi date change hogi toh handelr terat table ke data ko change krdega
+    // jisse
 
     const mergedColumns = columns.map(col => {
         if (!col.editable) {
@@ -226,7 +263,7 @@ const ViewMealsForUser = ({match}) => {
             ...col,
             onCell: record => ({
                 record,
-                inputType: col.dataIndex === 'age' ? 'number' : 'text',
+                inputType: col.dataIndex === 'calorie' ? 'number' : 'text',
                 dataIndex: col.dataIndex,
                 title: col.title,
                 editing: isEditing(record),

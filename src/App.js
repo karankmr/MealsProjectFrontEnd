@@ -3,7 +3,7 @@ import './css/App.css';
 import Login from "./components/login";
 import {BrowserRouter as Router,Route} from "react-router-dom";
 import SignUp from "./components/signUp";
-import ViewAllMeals from "./components/viewAllMeals";
+import ViewAllMeals from "./components/user/viewAllMeals";
 import CreateMeal from "./components/admin/create-meal";
 import AdminView from "./components/admin/adminView";
 import ViewAllUsers from "./components/admin/viewAllusers";
@@ -34,6 +34,9 @@ function App() {
 
                 <ProtectedRoutes path='/viewAllMeals' component={ViewAllMeals}
                                  loggedIn={reactLocalStorage.get('isLoggedIn')} />
+
+                {/*<ProtectedRoutes path='/userView' component={userView}*/}
+                {/*                 loggedIn={reactLocalStorage.get('isLoggedIn')} />*/}
 
                 <ProtectedRoutes path='/viewMealById/:id' component={ViewMealsForUser}
                                  loggedIn={reactLocalStorage.get('isLoggedIn')} />

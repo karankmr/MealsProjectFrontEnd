@@ -2,8 +2,9 @@ import React, {useEffect, useState} from "react";
 import axios from 'axios'
 import {Button, Pagination, Table,Input} from 'antd';
 import 'antd/dist/antd.css';
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import {reactLocalStorage} from "reactjs-localstorage";
+import {PoweroffOutlined} from "@ant-design/icons";
 const { Column ,ColumnGroup} = Table;
 const {Search}=Input
 
@@ -40,6 +41,12 @@ const ViewAllUsers=()=>{
         axios.get(`http://localhost:3001/user/searchUser?search=${value}`,
             {headers:{'jwttoken':reactLocalStorage.get('jwttoken')}})
             .then(res=>{setUsers(res.data)})
+    }
+
+    const history =useHistory();
+    const handleLogout=()=>{
+        reactLocalStorage.clear();
+        history.push('/login')
     }
    //  let index=[]
    // for(let i=1;i<users.length;i++){
@@ -95,8 +102,17 @@ const ViewAllUsers=()=>{
                 />
             </Table>
             <br/>
-            <footer>
             <Pagination size="small" current={page} onChange={handlePagination} total={50}  />
+            <footer style={{marginTop:'45vh'}}>
+                    <h3>@Calorie Counter</h3>
+                    <div style={{position:'absolute',marginLeft:'85%'}}>
+                        <Button
+                            icon={<PoweroffOutlined />}
+                            onClick={handleLogout}
+                        >
+                            Logout
+                        </Button>
+                    </div>
             </footer>
         </div>
 
