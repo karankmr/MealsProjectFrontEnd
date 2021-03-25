@@ -16,7 +16,7 @@ body{
 
 .login{
   height: 100vh;
-  background-image: linear-gradient(to right bottom, rgba(70, 130, 180, 0.72), rgba(0, 0, 0, 0.5)),url(../img/iceage.jpg);
+  background-image: linear-gradient(to right bottom, rgba(70, 130, 180, 0.72), rgba(0, 0, 0, 0.5)),url(../img/changejpg.jpg);
   background-size: cover;
   background-position:top  ;
   position: relative;
@@ -32,7 +32,7 @@ body{
 }
 .SignUp{
   height: 100vh;
-  background-image: linear-gradient(to right bottom, rgba(70, 130, 180, 0.72), rgba(0, 0, 0, 0.5)),url(../img/Ice-Age-Scrat-Wallpaper-2.jpg);
+  background-image: linear-gradient(to right bottom, rgba(70, 130, 180, 0.72), rgba(0, 0, 0, 0.5)),url(../img/changejpg.jpg);
   background-size: cover;
   background-position:top  ;
   position: relative;
@@ -40,7 +40,7 @@ body{
 
 .CreateMeal{
   height: 100vh;
-  background-image: linear-gradient(to right bottom, rgba(70, 130, 180, 0.72), rgba(0, 0, 0, 0.5)),url(../img/10944.jpg);
+  background-image: linear-gradient(to right bottom, rgba(70, 130, 180, 0.72), rgba(0, 0, 0, 0.5)),url(../img/changejpg.jpg);
   background-size: cover;
   background-position:top  ;
   position: relative;
